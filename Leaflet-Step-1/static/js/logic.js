@@ -1,36 +1,59 @@
-var myMap = L.map("map", {
-    center: [40.7, -122],
-    zoom: 6
-});
-// Adding tile layer
-L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-    attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
-    tileSize: 512,
-    maxZoom: 18,
-    zoomOffset: -1,
-    id: "mapbox/streets-v11",
-    accessToken: API_KEY
-  }).addTo(myMap);
 // geojson from earthquake.usgs.gov website 
 var quake_url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson"; 
   
 d3.json(quake_url).then(function(response) {
     console.log(response);
     console.log(response.features);
-    var heatArray = [];
+    var quakemarkers = []
     //set up a new marker for each item with a for loop
     for (var i = 0; i < response.features.length; i++) { 
         var location = response.features[i].geometry; //defining location  (so first you go to index i=0 , then to location and ..)
 
         if (location) { //and if you can unfurl location you pick the coordinates
         // Listing the coordinates 
-        heatArray.push([location.coordinates[1], location.coordinates[0]]); 
+        quakemarkers.push(
+        L.marker([location.coordinates[1], location.coordinates[0]]) 
+        );
         }
     }
-    var heat = L.HeatLayer(heatArray, { 
-        radius: 20,
-        blur: 100 // with more blur the intesity goes down. (smoother)
-    }).addTo(myMap);
+   
+    var cityLayer = L.layerGroup(quakemarkers);
+    // Adding tile layer
+    var light = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        maxZoom: 18,
+        id: "light-v10",
+        accessToken: API_KEY
+    });
     
+    var dark = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        maxZoom: 18,
+        id: "dark-v10",
+        accessToken: API_KEY
+    });
+    // Only one base layer can be shown at a time
+    var baseMaps = {
+        Light: light,
+        Dark: dark
+        };
+    // Overlays that may be toggled on or off
+    var overlayMaps = {
+        Earthqueake: cityLayer
+        };
+    var myMap = L.map("map", {
+        center: [40.7, -122],
+        zoom: 6,
+        layers:[light, cityLayer]
+    });
+    
+    // Pass our map layers into our layer control
+    // Add the layer control to the map
+    L.control.layers(baseMaps, overlayMaps).addTo(myMap);
+    
+    
+
 });
+
+
     
