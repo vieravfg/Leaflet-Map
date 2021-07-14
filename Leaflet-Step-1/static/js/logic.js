@@ -19,10 +19,9 @@ d3.json(quake_url).then(function(response) {
    
     var cityLayer = L.layerGroup(quakemarkers);
     // Adding tile layer
-    var light = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+    var satellite = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}", {
         attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
         maxZoom: 18,
-        id: "light-v10",
         accessToken: API_KEY
     });
     
@@ -34,7 +33,7 @@ d3.json(quake_url).then(function(response) {
     });
     // Only one base layer can be shown at a time
     var baseMaps = {
-        Light: light,
+        Satellite: satellite,
         Dark: dark
         };
     // Overlays that may be toggled on or off
@@ -42,9 +41,9 @@ d3.json(quake_url).then(function(response) {
         Earthqueake: cityLayer
         };
     var myMap = L.map("map", {
-        center: [40.7, -122],
+        center: [40.7, -110],
         zoom: 6,
-        layers:[light, cityLayer]
+        layers:[satellite, cityLayer]
     });
     
     // Pass our map layers into our layer control
