@@ -12,7 +12,13 @@ d3.json(quake_url).then(function(response) {
         if (location) { //and if you can unfurl location you pick the coordinates
         // Listing the coordinates 
         quakemarkers.push(
-        L.marker([location.coordinates[1], location.coordinates[0]]) 
+        L.circleMarker([location.coordinates[1], location.coordinates[0]], {
+            fillOpacity: 0.75,
+            color: "white",
+            fillColor: color,
+            // Adjust radius by 
+            radius: location.coordinates[2] / 7.5
+        }) 
         );
         }
     }
@@ -25,16 +31,16 @@ d3.json(quake_url).then(function(response) {
         accessToken: API_KEY
     });
     
-    var dark = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
+    var light = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
         attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
         maxZoom: 18,
-        id: "dark-v10",
+        id: "light-v10",
         accessToken: API_KEY
     });
     // Only one base layer can be shown at a time
     var baseMaps = {
         Satellite: satellite,
-        Dark: dark
+        Grayscale: light
         };
     // Overlays that may be toggled on or off
     var overlayMaps = {
@@ -42,7 +48,7 @@ d3.json(quake_url).then(function(response) {
         };
     var myMap = L.map("map", {
         center: [40.7, -110],
-        zoom: 6,
+        zoom: 6.2,
         layers:[satellite, cityLayer]
     });
     
