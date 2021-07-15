@@ -1,10 +1,20 @@
 // geojson from earthquake.usgs.gov website 
 var quake_url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson"; 
-  
+// geojson from github.com/fraxen/tectonicplates
+var tectonic_url = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
+d3.json(tectonic_url).then(function(response) {
+    console.log(response);
+    console.log(response.features);
+    var tectonicLines = [];
+    var tectonicLayer = L.layerGroup(tectonicLines);
+
+});
+
+
 d3.json(quake_url).then(function(response) {
     console.log(response);
     console.log(response.features);
-    var quakemarkers = []
+    var quakemarkers = [];
     //set up a new marker for each item with a for loop
     for (var i = 0; i < response.features.length; i++) { 
         var location = response.features[i].geometry; 
@@ -74,7 +84,7 @@ d3.json(quake_url).then(function(response) {
         };
     // Overlays that may be toggled on or off
     var overlayMaps = {
-        Earthqueake: cityLayer
+        Earthqueakes: cityLayer,
         };
     var myMap = L.map("map", {
         center: [40.7, -110],
@@ -85,29 +95,34 @@ d3.json(quake_url).then(function(response) {
     // Pass our map layers into our layer control
     // Add the layer control to the map
     L.control.layers(baseMaps, overlayMaps).addTo(myMap);
-    
-    // Set up the legend 
+    //--------
+    function getColor(d) {
+        return d > 90 ? '#FF0D0D' :
+               d > 70 ? '#FF4E11' :
+               d > 50 ? '#FF8E15' :
+               d > 30 ? '#FAB733' :
+               d > 10 ? '#ACB334' :
+                        '#69B34C' ;
+    }
+    // Set up the legend control object 
     var legend = L.control({ position: "bottomright" }); 
-    legend.onAdd = function() {
+    legend.onAdd = function(myMap) {
         // Placing a new div with two different classes
         var div = L.DomUtil.create("div", "info legend"); 
-        var ranges = ["-10-10","10-30","30-50","50-70","70-90","90+"]; 
-        var colors = ["#69B34C","#ACB334","#FAB733","#FF8E15","#FF4E11","#FF0D0D"];
-        var labels = [];
+            categories = [-10, 10, 30, 50, 70, 90]; 
+            labels = []
+        console.log(categories)
 
-        // Add min & max
-        var legendInfo = "<h1> mmmmmmm </h1>" +
-        "<div class=\"labels\">" +
-        "</div>";
+        // loop through categories intervals and generate a label with a colored square for each interval
+        
+        for (var i = 0; i < categories.length; i++) {
+            div.innerHTML += 
+                '<i style="background:' + getColor(categories[i] + 1) + '"></i> ' +
+                categories[i] + (categories[i + 1] ? '&ndash;' + categories[i + 1] + '<br>' : '+');
 
-        div.innerHTML = legendInfo; // placing legend info into html position
-
-        ranges.forEach(function(limit, index) {
-        labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-        });
-
-        div.innerHTML += "<ul>" + labels.join("") + "</ul>"; //+= add some stuff to whatever is in the code
+        }
         return div;
+       
     };
 
     // Adding legend to the map
@@ -115,5 +130,3 @@ d3.json(quake_url).then(function(response) {
 
 });  
 
-
-    
