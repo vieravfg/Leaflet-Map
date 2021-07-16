@@ -89,8 +89,8 @@ d3.json(quake_url).then(function(response) {
         };
     // Overlays that may be toggled on or off
     var overlayMaps = {
-        Earthqueakes: cityLayer,
-        Plates: tectonicPlates
+        Earthquakes: cityLayer,
+        "Tectonic Plates": tectonicPlates
         };
     var myMap = L.map("map", {
         center: [30.7, -110],
