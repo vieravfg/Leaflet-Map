@@ -1,6 +1,6 @@
 # Leaflet Challenge
 ## Shortcuts
-I am submitting the following two files: [Leaflet-Step-1](Leaflet-Step-1) and [Leaflet-Step-2](Leaflet-Step-2) with their respective html and Javascript files.
+I am submitting the following two folders: [Leaflet-Step-1](Leaflet-Step-1) and [Leaflet-Step-2](Leaflet-Step-2) with their respective html and Javascript files.
 
 The config.js files where omitted with .gitignore.
 ## Background
