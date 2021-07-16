@@ -1,16 +1,5 @@
 // geojson from earthquake.usgs.gov website 
 var quake_url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson"; 
-// geojson from github.com/fraxen/tectonicplates
-var tectonic_url = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
-d3.json(tectonic_url).then(function(response) {
-    console.log(response);
-    console.log(response.features);
-    var tectonicLines = [];
-    var tectonicLayer = L.layerGroup(tectonicLines);
-
-});
-
-
 d3.json(quake_url).then(function(response) {
     console.log(response);
     console.log(response.features);
@@ -55,7 +44,25 @@ d3.json(quake_url).then(function(response) {
         );
         }
     }
+    // Create layers for two different data sets.
     var cityLayer = L.layerGroup(quakemarkers);
+    var tectonicPlates = L.layerGroup(tectonicPlates);
+
+    //BONUS
+    // geojson from github.com/fraxen/tectonicplates
+    var t_url = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
+    var tectonicPlates = []
+    d3.json(t_url).then(function(data) {
+    console.log(data);  
+    // Listing the boundaries
+    // Add lines to map
+    L.geoJson(data, {
+        //Adjust color and width of line
+        color: "pink", weight: 3
+    }).addTo(tectonicPlates)
+    });
+   
+
     // Adding tile layer
     var satellite = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}", {
         attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
@@ -85,6 +92,7 @@ d3.json(quake_url).then(function(response) {
     // Overlays that may be toggled on or off
     var overlayMaps = {
         Earthqueakes: cityLayer,
+        Plates: tectonicPlates
         };
     var myMap = L.map("map", {
         center: [40.7, -110],
@@ -109,7 +117,7 @@ d3.json(quake_url).then(function(response) {
     legend.onAdd = function(myMap) {
         // Placing a new div with two different classes
         var div = L.DomUtil.create("div", "info legend"); 
-            categories = [-10, 10, 30, 50, 70, 90]; 
+            categories = [-10, 10, 30, 50, 70, 90];
             labels = []
         console.log(categories)
 
@@ -128,5 +136,4 @@ d3.json(quake_url).then(function(response) {
     // Adding legend to the map
     legend.addTo(myMap);
 
-});  
-
+})  
