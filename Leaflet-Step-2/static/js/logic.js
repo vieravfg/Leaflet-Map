@@ -51,7 +51,6 @@ d3.json(quake_url).then(function(response) {
     //BONUS
     // geojson from github.com/fraxen/tectonicplates
     var t_url = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
-    var tectonicPlates = []
     d3.json(t_url).then(function(data) {
     console.log(data);  
     // Listing the boundaries
