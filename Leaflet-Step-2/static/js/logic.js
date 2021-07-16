@@ -60,7 +60,6 @@ d3.json(quake_url).then(function(response) {
         color: "pink", weight: 3
     }).addTo(tectonicPlates)
     });
-   
 
     // Adding tile layer
     var satellite = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}", {
@@ -94,9 +93,9 @@ d3.json(quake_url).then(function(response) {
         Plates: tectonicPlates
         };
     var myMap = L.map("map", {
-        center: [40.7, -110],
+        center: [30.7, -110],
         zoom: 5,
-        layers:[satellite, cityLayer]
+        layers:[satellite, cityLayer, tectonicPlates]
     });
     
     // Pass our map layers into our layer control
